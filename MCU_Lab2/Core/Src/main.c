@@ -75,6 +75,35 @@ void display7SEG(int num, int a, int b, int c, int d, int e, int f, int g) {
         default: break;
     }
 }
+
+const int MAX_LED = 4;
+int index_led = 0;
+int led_buffer[4] = {1, 2, 3, 4};
+void update7SEG(int index){
+    // Tắt hết các EN
+    HAL_GPIO_WritePin(GPIOA, en0_Pin|en1_Pin|en2_Pin|en3_Pin, GPIO_PIN_SET);
+
+    switch(index){
+        case 0:
+            HAL_GPIO_WritePin(GPIOA, en0_Pin, GPIO_PIN_RESET);
+            display7SEG(led_buffer[0],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
+            break;
+        case 1:
+            HAL_GPIO_WritePin(GPIOA, en1_Pin, GPIO_PIN_RESET);
+            display7SEG(led_buffer[1],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
+            break;
+        case 2:
+            HAL_GPIO_WritePin(GPIOA, en2_Pin, GPIO_PIN_RESET);
+            display7SEG(led_buffer[2],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
+            break;
+        case 3:
+            HAL_GPIO_WritePin(GPIOA, en3_Pin, GPIO_PIN_RESET);
+            display7SEG(led_buffer[3],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
+            break;
+        default: break;
+    }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -84,7 +113,7 @@ void display7SEG(int num, int a, int b, int c, int d, int e, int f, int g) {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-int mode=0;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -126,51 +155,14 @@ int mode=0;
 				HAL_GPIO_TogglePin(GPIOA, Red_Led_Pin);
 	  }
 
-	  if(timer2_flag==1){
-		  setTimer2(25);
-		//TODO
-		switch(mode){
-		case 0:
-			HAL_GPIO_WritePin(GPIOA, en0_Pin, RESET);
-			HAL_GPIO_WritePin(GPIOA, en1_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en2_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en3_Pin, SET);
-			display7SEG(1, a_Pin, b_Pin, c_Pin, d_Pin, e_Pin, f_Pin, g_Pin);
-		    mode++;
-		    break;
-		case 1:
-			HAL_GPIO_WritePin(GPIOA, en0_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en1_Pin, RESET);
-			HAL_GPIO_WritePin(GPIOA, en2_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en3_Pin, SET);
-			display7SEG(2, a_Pin, b_Pin, c_Pin, d_Pin, e_Pin, f_Pin, g_Pin);
-			mode++;
-			break;
-		case 2:
-			HAL_GPIO_WritePin(GPIOA, en0_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en1_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en2_Pin, RESET);
-			HAL_GPIO_WritePin(GPIOA, en3_Pin, SET);
-			display7SEG(3, a_Pin, b_Pin, c_Pin, d_Pin, e_Pin, f_Pin, g_Pin);
-			mode++;
-			break;
-		case 3:
-			HAL_GPIO_WritePin(GPIOA, en0_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en1_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en2_Pin, SET);
-			HAL_GPIO_WritePin(GPIOA, en3_Pin, RESET);
-			display7SEG(0, a_Pin, b_Pin, c_Pin, d_Pin, e_Pin, f_Pin, g_Pin);
-			mode=0;
-			break;
-		default: mode=0;
-		}
-	  }
+	    if(timer2_flag==1){
+	        setTimer2(25);
+	        // Quét 7SEG
+	        update7SEG(index_led);
+	        index_led++;
+	        if(index_led >= MAX_LED) index_led = 0;
+	    }
 
-	  if(timer3_flag==1){
-		  setTimer3(100);
-		//TODO
-				HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
-	  }
 
   }
   /* USER CODE END 3 */
