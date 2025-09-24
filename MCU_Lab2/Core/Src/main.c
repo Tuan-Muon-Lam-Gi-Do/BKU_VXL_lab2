@@ -56,63 +56,54 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void display7SEG(int num, int a, int b, int c, int d, int e, int f, int g) {
-    // Tắt hết các segment trước
-    HAL_GPIO_WritePin(GPIOB, a|b|c|d|e|f|g, GPIO_PIN_SET);
 
-    // Bật theo số cần hiển thị
-    switch(num) {
-        case 0: HAL_GPIO_WritePin(GPIOB, a|b|c|d|e|f, GPIO_PIN_RESET); break;
-        case 1: HAL_GPIO_WritePin(GPIOB, b|c, GPIO_PIN_RESET); break;
-        case 2: HAL_GPIO_WritePin(GPIOB, a|b|d|e|g, GPIO_PIN_RESET); break;
-        case 3: HAL_GPIO_WritePin(GPIOB, a|b|c|d|g, GPIO_PIN_RESET); break;
-        case 4: HAL_GPIO_WritePin(GPIOB, b|c|f|g, GPIO_PIN_RESET); break;
-        case 5: HAL_GPIO_WritePin(GPIOB, a|c|d|f|g, GPIO_PIN_RESET); break;
-        case 6: HAL_GPIO_WritePin(GPIOB, a|c|d|e|f|g, GPIO_PIN_RESET); break;
-        case 7: HAL_GPIO_WritePin(GPIOB, a|b|c, GPIO_PIN_RESET); break;
-        case 8: HAL_GPIO_WritePin(GPIOB, a|b|c|d|e|f|g, GPIO_PIN_RESET); break;
-        case 9: HAL_GPIO_WritePin(GPIOB, a|b|c|d|f|g, GPIO_PIN_RESET); break;
-        default: break;
+
+const int MAX_LED_MATRIX = 8;
+int index_led_matrix = 0;
+// Mỗi phần tử là dữ liệu cho 1 cột (8 bit -> 8 hàng)
+uint8_t matrix_buffer[8] = {
+    0x7E, // 01111110 (cột 0)
+    0x11, // 00010001
+    0x11, // 00010001
+    0x7E, // 01111110
+    0x11, // 00010001
+    0x11, // 00010001
+    0x11, // 00010001
+    0x00  // trống
+};
+uint16_t rowPins[8] = {r0_Pin, r1_Pin, r2_Pin, r3_Pin, r4_Pin, r5_Pin, r6_Pin, r7_Pin};
+
+void updateMatrix(uint8_t colIndex){
+    // Tắt tất cả cột trước khi set row
+    HAL_GPIO_WritePin(GPIOA, enm0_Pin|enm1_Pin|enm2_Pin|enm3_Pin
+                            |enm4_Pin|enm5_Pin|enm6_Pin|enm7_Pin, GPIO_PIN_RESET);
+
+    // Set row theo dữ liệu cột hiện tại
+    uint8_t data = matrix_buffer[colIndex];
+    HAL_GPIO_WritePin(GPIOB, r0_Pin, (data & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r1_Pin, (data & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r2_Pin, (data & 0x04) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r3_Pin, (data & 0x08) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r4_Pin, (data & 0x10) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r5_Pin, (data & 0x20) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r6_Pin, (data & 0x40) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, r7_Pin, (data & 0x80) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+
+    // Bật cột hiện tại
+    switch(colIndex){
+        case 0: HAL_GPIO_WritePin(GPIOA, enm0_Pin, GPIO_PIN_SET); break;
+        case 1: HAL_GPIO_WritePin(GPIOA, enm1_Pin, GPIO_PIN_SET); break;
+        case 2: HAL_GPIO_WritePin(GPIOA, enm2_Pin, GPIO_PIN_SET); break;
+        case 3: HAL_GPIO_WritePin(GPIOA, enm3_Pin, GPIO_PIN_SET); break;
+        case 4: HAL_GPIO_WritePin(GPIOA, enm4_Pin, GPIO_PIN_SET); break;
+        case 5: HAL_GPIO_WritePin(GPIOA, enm5_Pin, GPIO_PIN_SET); break;
+        case 6: HAL_GPIO_WritePin(GPIOA, enm6_Pin, GPIO_PIN_SET); break;
+        case 7: HAL_GPIO_WritePin(GPIOA, enm7_Pin, GPIO_PIN_SET); break;
     }
 }
 
-const int MAX_LED = 4;
-int index_led = 0;
-int led_buffer[4] = {1, 2, 3, 4};
-void update7SEG(int index){
-    // Tắt hết các EN
-    HAL_GPIO_WritePin(GPIOA, en0_Pin|en1_Pin|en2_Pin|en3_Pin, GPIO_PIN_SET);
 
-    switch(index){
-        case 0:
-            HAL_GPIO_WritePin(GPIOA, en0_Pin, GPIO_PIN_RESET);
-            display7SEG(led_buffer[0],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
-            break;
-        case 1:
-            HAL_GPIO_WritePin(GPIOA, en1_Pin, GPIO_PIN_RESET);
-            display7SEG(led_buffer[1],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
-            break;
-        case 2:
-            HAL_GPIO_WritePin(GPIOA, en2_Pin, GPIO_PIN_RESET);
-            display7SEG(led_buffer[2],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
-            break;
-        case 3:
-            HAL_GPIO_WritePin(GPIOA, en3_Pin, GPIO_PIN_RESET);
-            display7SEG(led_buffer[3],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
-            break;
-        default: break;
-    }
-}
-int hour = 15, minute = 8, second = 50;
-void updateClockBuffer(void) {
-    // Giờ
-    led_buffer[0] = hour / 10;   // hàng chục giờ
-    led_buffer[1] = hour % 10;   // hàng đơn vị giờ
 
-    // Phút
-    led_buffer[2] = minute / 10; // hàng chục phút
-    led_buffer[3] = minute % 10; // hàng đơn vị phút
-}
 
 /* USER CODE END 0 */
 
@@ -153,7 +144,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   setTimer1(50);
   setTimer2(25);
-  setTimer3(100);
+  setTimer4(50);
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -164,32 +156,15 @@ int main(void)
 		//TODO
 				HAL_GPIO_TogglePin(GPIOA, Red_Led_Pin);
 		//Dong ho
-		        second++;
-		        if (second >= 60) {
-		            second = 0;
-		            minute++;
-		            if (minute >= 60) {
-		                minute = 0;
-		                hour++;
-		                if (hour >= 24) hour = 0;
-		            }
-		        }
-
-		        // Sau khi update giờ-phút, nạp vào led_buffer
-		        updateClockBuffer();
 	  }
 
-	    if(timer2_flag==1){
-	        setTimer2(25);
-	        // Quét 7SEG
-	        update7SEG(index_led);
-	        index_led++;
-	        if(index_led >= MAX_LED) index_led = 0;
-	    }
 
-	    if(timer3_flag==1){
-	    	setTimer3(100);
-	    	HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
+	    if(timer4_flag==1){
+	    	setTimer4(50);
+	    	//TODO
+	    	updateMatrix(index_led_matrix);
+	    	index_led_matrix++;
+	    	if(index_led_matrix >= 8) index_led_matrix = 0;
 	    }
   }
   /* USER CODE END 3 */
@@ -289,26 +264,38 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, DOT_Pin|Red_Led_Pin|en0_Pin|en1_Pin
-                          |en2_Pin|en3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, enm0_Pin|enm1_Pin|DOT_Pin|Red_Led_Pin
+                          |en0_Pin|en1_Pin|en2_Pin|en3_Pin
+                          |enm2_Pin|enm3_Pin|enm4_Pin|enm5_Pin
+                          |enm6_Pin|enm7_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, a_Pin|b_Pin|c_Pin|d_Pin
-                          |e_Pin|f_Pin|g_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, a_Pin|b_Pin|c_Pin|r2_Pin
+                          |r3_Pin|r4_Pin|r5_Pin|r6_Pin
+                          |r7_Pin|d_Pin|e_Pin|f_Pin
+                          |g_Pin|r0_Pin|r1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : DOT_Pin Red_Led_Pin en0_Pin en1_Pin
-                           en2_Pin en3_Pin */
-  GPIO_InitStruct.Pin = DOT_Pin|Red_Led_Pin|en0_Pin|en1_Pin
-                          |en2_Pin|en3_Pin;
+  /*Configure GPIO pins : enm0_Pin enm1_Pin DOT_Pin Red_Led_Pin
+                           en0_Pin en1_Pin en2_Pin en3_Pin
+                           enm2_Pin enm3_Pin enm4_Pin enm5_Pin
+                           enm6_Pin enm7_Pin */
+  GPIO_InitStruct.Pin = enm0_Pin|enm1_Pin|DOT_Pin|Red_Led_Pin
+                          |en0_Pin|en1_Pin|en2_Pin|en3_Pin
+                          |enm2_Pin|enm3_Pin|enm4_Pin|enm5_Pin
+                          |enm6_Pin|enm7_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : a_Pin b_Pin c_Pin d_Pin
-                           e_Pin f_Pin g_Pin */
-  GPIO_InitStruct.Pin = a_Pin|b_Pin|c_Pin|d_Pin
-                          |e_Pin|f_Pin|g_Pin;
+  /*Configure GPIO pins : a_Pin b_Pin c_Pin r2_Pin
+                           r3_Pin r4_Pin r5_Pin r6_Pin
+                           r7_Pin d_Pin e_Pin f_Pin
+                           g_Pin r0_Pin r1_Pin */
+  GPIO_InitStruct.Pin = a_Pin|b_Pin|c_Pin|r2_Pin
+                          |r3_Pin|r4_Pin|r5_Pin|r6_Pin
+                          |r7_Pin|d_Pin|e_Pin|f_Pin
+                          |g_Pin|r0_Pin|r1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

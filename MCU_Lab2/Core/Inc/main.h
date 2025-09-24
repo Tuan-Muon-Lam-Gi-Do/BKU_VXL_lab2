@@ -58,6 +58,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define enm0_Pin GPIO_PIN_2
+#define enm0_GPIO_Port GPIOA
+#define enm1_Pin GPIO_PIN_3
+#define enm1_GPIO_Port GPIOA
 #define DOT_Pin GPIO_PIN_4
 #define DOT_GPIO_Port GPIOA
 #define Red_Led_Pin GPIO_PIN_5
@@ -72,10 +76,34 @@ void Error_Handler(void);
 #define b_GPIO_Port GPIOB
 #define c_Pin GPIO_PIN_2
 #define c_GPIO_Port GPIOB
+#define r2_Pin GPIO_PIN_10
+#define r2_GPIO_Port GPIOB
+#define r3_Pin GPIO_PIN_11
+#define r3_GPIO_Port GPIOB
+#define r4_Pin GPIO_PIN_12
+#define r4_GPIO_Port GPIOB
+#define r5_Pin GPIO_PIN_13
+#define r5_GPIO_Port GPIOB
+#define r6_Pin GPIO_PIN_14
+#define r6_GPIO_Port GPIOB
+#define r7_Pin GPIO_PIN_15
+#define r7_GPIO_Port GPIOB
 #define en2_Pin GPIO_PIN_8
 #define en2_GPIO_Port GPIOA
 #define en3_Pin GPIO_PIN_9
 #define en3_GPIO_Port GPIOA
+#define enm2_Pin GPIO_PIN_10
+#define enm2_GPIO_Port GPIOA
+#define enm3_Pin GPIO_PIN_11
+#define enm3_GPIO_Port GPIOA
+#define enm4_Pin GPIO_PIN_12
+#define enm4_GPIO_Port GPIOA
+#define enm5_Pin GPIO_PIN_13
+#define enm5_GPIO_Port GPIOA
+#define enm6_Pin GPIO_PIN_14
+#define enm6_GPIO_Port GPIOA
+#define enm7_Pin GPIO_PIN_15
+#define enm7_GPIO_Port GPIOA
 #define d_Pin GPIO_PIN_3
 #define d_GPIO_Port GPIOB
 #define e_Pin GPIO_PIN_4
@@ -84,6 +112,10 @@ void Error_Handler(void);
 #define f_GPIO_Port GPIOB
 #define g_Pin GPIO_PIN_6
 #define g_GPIO_Port GPIOB
+#define r0_Pin GPIO_PIN_8
+#define r0_GPIO_Port GPIOB
+#define r1_Pin GPIO_PIN_9
+#define r1_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
