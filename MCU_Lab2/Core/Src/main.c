@@ -163,6 +163,12 @@ int main(void)
 	        if(index_led >= MAX_LED) index_led = 0;
 	    }
 
+		  if(timer3_flag==1){
+			  setTimer3(100);
+			//TODO
+					HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
+		  }
+
 
   }
   /* USER CODE END 3 */
