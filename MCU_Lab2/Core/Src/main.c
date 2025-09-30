@@ -114,6 +114,68 @@ void updateClockBuffer(void) {
     led_buffer[3] = minute % 10; // hàng đơn vị phút
 }
 
+//Matrix part
+
+const uint8_t font7x5[][5] = {
+    // 'T'
+    {0x02, 0x02, 0xFE, 0x02, 0x02},
+    // 'U'
+    {0x7E, 0x80, 0x80, 0x80, 0x7E},
+    // 'A'
+    {0xFC, 0x22, 0x22, 0x22, 0xFC},
+    // 'N'
+	{0xFE, 0x04, 0x10, 0x40, 0xFE},
+};
+
+
+// Văn bản cần hiển thị
+const char text[] = "TUAN";
+
+#define MAX_SCROLL_COLS 64
+uint8_t scrollBuffer[MAX_SCROLL_COLS];
+int totalCols = 0;
+int scrollOffset = 0;
+
+
+const int MAX_LED_MATRIX = 8;
+int index_led_matrix = 0;
+
+void updateScrollMatrix(int rowIndex) {
+    // Tắt tất cả hàng
+    HAL_GPIO_WritePin(GPIOA, enm0_Pin|enm1_Pin|enm2_Pin|enm3_Pin
+                            |enm4_Pin|enm5_Pin|enm6_Pin|enm7_Pin, GPIO_PIN_SET);
+
+    // Lấy dữ liệu cho 8 cột bắt đầu từ scrollOffset
+    int colData = 0;
+    if (scrollOffset + rowIndex < totalCols) {
+        colData = scrollBuffer[scrollOffset + rowIndex];
+    } else {
+        colData = 0x00;
+    }
+
+    // Xuất dữ liệu từng cột
+    HAL_GPIO_WritePin(GPIOB, c0_Pin, (colData & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c1_Pin, (colData & 0x02) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c2_Pin, (colData & 0x04) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c3_Pin, (colData & 0x08) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c4_Pin, (colData & 0x10) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c5_Pin, (colData & 0x20) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c6_Pin, (colData & 0x40) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, c7_Pin, (colData & 0x80) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+
+    // Bật hàng hiện tại
+    switch(rowIndex){
+        case 0: HAL_GPIO_WritePin(GPIOA, enm0_Pin, GPIO_PIN_RESET); break;
+        case 1: HAL_GPIO_WritePin(GPIOA, enm1_Pin, GPIO_PIN_RESET); break;
+        case 2: HAL_GPIO_WritePin(GPIOA, enm2_Pin, GPIO_PIN_RESET); break;
+        case 3: HAL_GPIO_WritePin(GPIOA, enm3_Pin, GPIO_PIN_RESET); break;
+        case 4: HAL_GPIO_WritePin(GPIOA, enm4_Pin, GPIO_PIN_RESET); break;
+        case 5: HAL_GPIO_WritePin(GPIOA, enm5_Pin, GPIO_PIN_RESET); break;
+        case 6: HAL_GPIO_WritePin(GPIOA, enm6_Pin, GPIO_PIN_RESET); break;
+        case 7: HAL_GPIO_WritePin(GPIOA, enm7_Pin, GPIO_PIN_RESET); break;
+    }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -123,6 +185,24 @@ void updateClockBuffer(void) {
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
+	// Tạo scrollBuffer cho chữ TUAN
+	int idx = 0;
+	for (int k = 0; k < sizeof(text)-1; k++) {
+	    int charIndex;
+	    switch(text[k]) {
+	        case 'T': charIndex = 0; break;
+	        case 'U': charIndex = 1; break;
+	        case 'A': charIndex = 2; break;
+	        case 'N': charIndex = 3; break;
+	        default: charIndex = 0; break;
+	    }
+	    for (int c = 0; c < 5; c++) {
+	        scrollBuffer[idx++] = font7x5[charIndex][c];
+	    }
+	    scrollBuffer[idx++] = 0x00; // 1 cột trống
+	}
+	totalCols = idx;
 
   /* USER CODE END 1 */
 
@@ -154,6 +234,7 @@ int main(void)
   setTimer1(50);
   setTimer2(25);
   setTimer3(100);
+  setTimer4(5);
   while (1)
   {
     /* USER CODE END WHILE */
@@ -191,6 +272,18 @@ int main(void)
 	    	setTimer3(100);
 	    	HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
 	    }
+
+		  if(timer4_flag==1){
+		      setTimer4(5);
+		      updateScrollMatrix(index_led_matrix);
+		      index_led_matrix++;
+		      if(index_led_matrix >= 8) {
+		          index_led_matrix = 0;
+		          // Mỗi vòng quét xong 8 hàng thì dịch offset
+		          scrollOffset++;
+		          if(scrollOffset >= totalCols) scrollOffset = 0;
+		      }
+		  }
   }
   /* USER CODE END 3 */
 }
