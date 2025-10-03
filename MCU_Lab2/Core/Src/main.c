@@ -151,7 +151,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(50);
+  setTimer1(100);
   setTimer2(25);
   setTimer3(100);
   while (1)
@@ -160,7 +160,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  if(timer1_flag==1){
-		  setTimer1(50);
+		  setTimer1(100);
 		//TODO
 				HAL_GPIO_TogglePin(GPIOA, Red_Led_Pin);
 		//Dong ho
