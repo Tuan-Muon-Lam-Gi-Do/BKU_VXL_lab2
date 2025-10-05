@@ -97,8 +97,8 @@ void update7SEG(int index){
             display7SEG(led_buffer[2],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
             break;
         case 3:
-            display7SEG(led_buffer[3], a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
             HAL_GPIO_WritePin(GPIOA, en3_Pin, GPIO_PIN_RESET);
+            display7SEG(led_buffer[3], a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
             break;
         default: break;
     }
