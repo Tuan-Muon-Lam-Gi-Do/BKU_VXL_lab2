@@ -720,26 +720,26 @@ void update7SEG(int index){
             break;
  80005c6:	e016      	b.n	80005f6 <update7SEG+0xde>
         case 3:
+            display7SEG(led_buffer[3], a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
+ 80005c8:	4b0e      	ldr	r3, [pc, #56]	; (8000604 <update7SEG+0xec>)
+ 80005ca:	68d8      	ldr	r0, [r3, #12]
+ 80005cc:	2340      	movs	r3, #64	; 0x40
+ 80005ce:	9303      	str	r3, [sp, #12]
+ 80005d0:	2320      	movs	r3, #32
+ 80005d2:	9302      	str	r3, [sp, #8]
+ 80005d4:	2310      	movs	r3, #16
+ 80005d6:	9301      	str	r3, [sp, #4]
+ 80005d8:	2308      	movs	r3, #8
+ 80005da:	9300      	str	r3, [sp, #0]
+ 80005dc:	2304      	movs	r3, #4
+ 80005de:	2202      	movs	r2, #2
+ 80005e0:	2101      	movs	r1, #1
+ 80005e2:	f7ff fe59 	bl	8000298 <display7SEG>
             HAL_GPIO_WritePin(GPIOA, en3_Pin, GPIO_PIN_RESET);
- 80005c8:	2200      	movs	r2, #0
- 80005ca:	f44f 7100 	mov.w	r1, #512	; 0x200
- 80005ce:	480c      	ldr	r0, [pc, #48]	; (8000600 <update7SEG+0xe8>)
- 80005d0:	f000 fef2 	bl	80013b8 <HAL_GPIO_WritePin>
-            display7SEG(led_buffer[3],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
- 80005d4:	4b0b      	ldr	r3, [pc, #44]	; (8000604 <update7SEG+0xec>)
- 80005d6:	68d8      	ldr	r0, [r3, #12]
- 80005d8:	2340      	movs	r3, #64	; 0x40
- 80005da:	9303      	str	r3, [sp, #12]
- 80005dc:	2320      	movs	r3, #32
- 80005de:	9302      	str	r3, [sp, #8]
- 80005e0:	2310      	movs	r3, #16
- 80005e2:	9301      	str	r3, [sp, #4]
- 80005e4:	2308      	movs	r3, #8
- 80005e6:	9300      	str	r3, [sp, #0]
- 80005e8:	2304      	movs	r3, #4
- 80005ea:	2202      	movs	r2, #2
- 80005ec:	2101      	movs	r1, #1
- 80005ee:	f7ff fe53 	bl	8000298 <display7SEG>
+ 80005e6:	2200      	movs	r2, #0
+ 80005e8:	f44f 7100 	mov.w	r1, #512	; 0x200
+ 80005ec:	4804      	ldr	r0, [pc, #16]	; (8000600 <update7SEG+0xe8>)
+ 80005ee:	f000 fee3 	bl	80013b8 <HAL_GPIO_WritePin>
             break;
  80005f2:	e000      	b.n	80005f6 <update7SEG+0xde>
         default: break;
@@ -759,8 +759,8 @@ int hour = 15, minute = 8, second = 50;
 void updateClockBuffer(void) {
  8000608:	b480      	push	{r7}
  800060a:	af00      	add	r7, sp, #0
-    // Gi�?
-    led_buffer[0] = hour / 10;   // hàng chục gi�?
+    // Gi�?
+    led_buffer[0] = hour / 10;   // hàng chục gi�?
  800060c:	4b1a      	ldr	r3, [pc, #104]	; (8000678 <updateClockBuffer+0x70>)
  800060e:	681b      	ldr	r3, [r3, #0]
  8000610:	4a1a      	ldr	r2, [pc, #104]	; (800067c <updateClockBuffer+0x74>)
@@ -770,7 +770,7 @@ void updateClockBuffer(void) {
  800061a:	1ad3      	subs	r3, r2, r3
  800061c:	4a18      	ldr	r2, [pc, #96]	; (8000680 <updateClockBuffer+0x78>)
  800061e:	6013      	str	r3, [r2, #0]
-    led_buffer[1] = hour % 10;   // hàng đơn vị gi�?
+    led_buffer[1] = hour % 10;   // hàng đơn vị gi�?
  8000620:	4b15      	ldr	r3, [pc, #84]	; (8000678 <updateClockBuffer+0x70>)
  8000622:	6819      	ldr	r1, [r3, #0]
  8000624:	4b15      	ldr	r3, [pc, #84]	; (800067c <updateClockBuffer+0x74>)
@@ -1192,11 +1192,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(50);
- 8000950:	2032      	movs	r0, #50	; 0x32
+  setTimer1(10);
+ 8000950:	200a      	movs	r0, #10
  8000952:	f7ff fbfb 	bl	800014c <setTimer1>
-  setTimer2(25);
- 8000956:	2019      	movs	r0, #25
+  setTimer2(5);
+ 8000956:	2005      	movs	r0, #5
  8000958:	f7ff fc0c 	bl	8000174 <setTimer2>
   setTimer3(100);
  800095c:	2064      	movs	r0, #100	; 0x64
@@ -1214,8 +1214,8 @@ int main(void)
  800096a:	681b      	ldr	r3, [r3, #0]
  800096c:	2b01      	cmp	r3, #1
  800096e:	d12c      	bne.n	80009ca <main+0x172>
-		  setTimer1(50);
- 8000970:	2032      	movs	r0, #50	; 0x32
+		  setTimer1(10);
+ 8000970:	200a      	movs	r0, #10
  8000972:	f7ff fbeb 	bl	800014c <setTimer1>
 		//TODO
 				HAL_GPIO_TogglePin(GPIOA, Red_Led_Pin);
@@ -1270,7 +1270,7 @@ int main(void)
 		            }
 		        }
 
-		        // Sau khi update gi�?-phút, nạp vào led_buffer
+		        // Sau khi update gi�?-phút, nạp vào led_buffer
 		        updateClockBuffer();
  80009c6:	f7ff fe1f 	bl	8000608 <updateClockBuffer>
 	  }
@@ -1280,8 +1280,8 @@ int main(void)
  80009cc:	681b      	ldr	r3, [r3, #0]
  80009ce:	2b01      	cmp	r3, #1
  80009d0:	d114      	bne.n	80009fc <main+0x1a4>
-	        setTimer2(25);
- 80009d2:	2019      	movs	r0, #25
+	        setTimer2(5);
+ 80009d2:	2005      	movs	r0, #5
  80009d4:	f7ff fbce 	bl	8000174 <setTimer2>
 	        // Quét 7SEG
 	        update7SEG(index_led);

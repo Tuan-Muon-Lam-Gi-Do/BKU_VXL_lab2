@@ -97,17 +97,17 @@ void update7SEG(int index){
             display7SEG(led_buffer[2],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
             break;
         case 3:
+            display7SEG(led_buffer[3], a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
             HAL_GPIO_WritePin(GPIOA, en3_Pin, GPIO_PIN_RESET);
-            display7SEG(led_buffer[3],a_Pin,b_Pin,c_Pin,d_Pin,e_Pin,f_Pin,g_Pin);
             break;
         default: break;
     }
 }
 int hour = 15, minute = 8, second = 50;
 void updateClockBuffer(void) {
-    // Gi�?
-    led_buffer[0] = hour / 10;   // hàng chục gi�?
-    led_buffer[1] = hour % 10;   // hàng đơn vị gi�?
+    // Gi�?
+    led_buffer[0] = hour / 10;   // hàng chục gi�?
+    led_buffer[1] = hour % 10;   // hàng đơn vị gi�?
 
     // Phút
     led_buffer[2] = minute / 10; // hàng chục phút
@@ -231,8 +231,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(50);
-  setTimer2(25);
+  setTimer1(10);
+  setTimer2(5);
   setTimer3(100);
   setTimer4(5);
   while (1)
@@ -241,7 +241,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  if(timer1_flag==1){
-		  setTimer1(50);
+		  setTimer1(10);
 		//TODO
 				HAL_GPIO_TogglePin(GPIOA, Red_Led_Pin);
 		//Dong ho
@@ -256,12 +256,12 @@ int main(void)
 		            }
 		        }
 
-		        // Sau khi update gi�?-phút, nạp vào led_buffer
+		        // Sau khi update gi�?-phút, nạp vào led_buffer
 		        updateClockBuffer();
 	  }
 
 	    if(timer2_flag==1){
-	        setTimer2(25);
+	        setTimer2(5);
 	        // Quét 7SEG
 	        update7SEG(index_led);
 	        index_led++;
