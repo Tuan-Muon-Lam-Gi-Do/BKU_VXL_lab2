@@ -64,9 +64,8 @@ void timerRun(){
 	if(timer4_counter>0){
 		timer4_counter--;
 		if(timer4_counter<=0){
-			timer3_flag=1;
+			timer4_flag=1;
 		}
 	}
-	//end
 }
 

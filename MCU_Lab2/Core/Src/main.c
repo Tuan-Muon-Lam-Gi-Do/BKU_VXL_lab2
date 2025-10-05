@@ -113,7 +113,7 @@ int mode=0;
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   setTimer1(100);
-  setTimer2(25);
+  setTimer2(50);
   setTimer3(100);
   while (1)
   {
@@ -127,7 +127,7 @@ int mode=0;
 	  }
 
 	  if(timer2_flag==1){
-		  setTimer2(25);
+		  setTimer2(50);
 		//TODO
 		switch(mode){
 		case 0:
